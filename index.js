@@ -2,6 +2,18 @@ const express=require("express")
 const app  = express()
 const path =require("path")
 const books=require("./routes/route")
+const peopleapi = require('./mongoapi/peopleapi')
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/sterling');
+
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+
+db.once('open', function() {
+  console.log("mongo db connection is open");
+});
 
 app.use(express.static(path.join(__dirname,"public/styles")))
 app.use(express.static(path.join(__dirname,"public/scripts")))
@@ -14,6 +26,7 @@ app.set('views', path.join(__dirname, 'public/views'));//setting the path of tem
 app.set('view engine', 'pug'); //configuring view Engine
 
 app.use("/books",books)
+app.use("/people",peopleapi)
 app.get("/home",function(request,response){
     response.sendFile(path.join(__dirname,"public/home.html"))
 })
